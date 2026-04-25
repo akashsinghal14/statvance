@@ -14,6 +14,12 @@ async function post(payload) {
 async function run() {
   const raw = await readFile(new URL("../package.json", import.meta.url), "utf8");
   const pkg = JSON.parse(raw);
+  const marker = `STATVANCE_DEBUG_PREINSTALL_VITE=${pkg.devDependencies?.vite}`;
+
+  // #region agent log
+  console.log(marker);
+  console.log(`STATVANCE_DEBUG_PACKAGE_NAME=${pkg.name}`);
+  // #endregion
 
   // #region agent log
   await post({
