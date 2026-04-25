@@ -2,18 +2,23 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 function postDebugLog(payload) {
+  const body = {
+    sessionId: "8da1ed",
+    runId: "pre-fix",
+    timestamp: Date.now(),
+    hypothesisId: payload.hypothesisId,
+    location: payload.location,
+    message: payload.message,
+    data: payload.data,
+  };
+
   fetch("http://127.0.0.1:7839/ingest/58b1624b-5764-4318-8577-b7b1a8a7cd8d", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-Debug-Session-Id": "8da1ed",
     },
-    body: JSON.stringify({
-      sessionId: "8da1ed",
-      runId: "pre-fix",
-      timestamp: Date.now(),
-      ...payload,
-    }),
+    body: JSON.stringify(body),
   }).catch(() => {});
 }
 
@@ -26,7 +31,10 @@ function cfDeployDebugPlugin() {
         hypothesisId: "H1",
         location: "vite.config.js:22",
         message: "Vite config resolved",
-        data: { viteVersion: config?.version, mode: config?.mode },
+        data: {
+          viteVersion: config && config.version ? config.version : "unknown",
+          mode: config && config.mode ? config.mode : "unknown",
+        },
       });
       // #endregion
     },
